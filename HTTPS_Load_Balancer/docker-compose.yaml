@@ -1,0 +1,33 @@
+version: "3.8"
+
+services:
+  web1:
+    build:
+      context: app
+      dockerfile: app1.Dockerfile
+    command: python app.py
+
+  web2:
+    build:
+      context: app
+      dockerfile: app2.Dockerfile
+    command: python app.py
+
+  web3:
+    build:
+      context: app
+      dockerfile: app3.Dockerfile
+    command: python app.py
+
+  # Notice we do not have to expose ports for web1,2,3 because NGINX will take care of the proxying for us.
+
+  nginx:
+    build: nginx
+    ports:
+      - 443:443
+    depends_on:
+      - web1
+      - web2
+      - web3
+    volumes:
+      - ./certs:/etc/certs
